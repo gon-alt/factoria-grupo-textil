@@ -1,0 +1,10 @@
+# Originales de diseño y lista de precios: NO se publican.
+# La web usa las copias optimizadas de assets/.
+/img/
+
+# Archivos temporales
+.tmp-claude/
+.vercel/
+.DS_Store
+Thumbs.db
+desktop.ini
