@@ -14,6 +14,24 @@
     a.href = waLink(a.getAttribute("data-wa"));
   });
 
+    // ── Medición: cada clic a WhatsApp se envía a GA4 como "whatsapp_click"
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a[href*="wa.me/"]');
+    if (!a || typeof window.gtag !== "function") return;
+    var ubicacion = a.classList.contains("wa-float") ? "flotante"
+      : a.closest(".site-header") ? "header"
+      : a.closest("footer") ? "footer"
+      : a.closest(".hero") ? "hero"
+      : (a.closest("section[id]") || {}).id || "otro";
+    var line = a.closest(".line");
+    var product = a.closest(".product");
+    var linea = line && line.querySelector("h3") ? line.querySelector("h3").textContent.trim()
+      : product && product.querySelector(".p-cat") ? product.querySelector(".p-cat").textContent.trim()
+      : "general";
+    var producto = product && product.querySelector(".p-name") ? product.querySelector(".p-name").textContent.trim() : "";
+    window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, producto: producto });
+  });
+ 
   // ── Año en el footer
   var y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
