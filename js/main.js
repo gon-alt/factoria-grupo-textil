@@ -61,83 +61,48 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  // ── Catálogo
-  var data = window.CATALOGO || [];
+  // ── Catálogo: los productos están escritos en el HTML (#products);
+  //    acá solo se arman los filtros y el "ver más"
   var filtersEl = document.getElementById("filters");
   var productsEl = document.getElementById("products");
-
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
-
   var moreBtn = document.getElementById("more");
   var LIMIT = 8;
 
-  function renderProducts(cat, all) {
-    productsEl.innerHTML = "";
-    var list = data.filter(function (p) { return cat === "Todos" || p.categoria === cat; });
+  function renderProducts(cards, cat, all) {
+    var list = cards.filter(function (c) { return cat === "Todos" || c.getAttribute("data-cat") === cat; });
     var cut = !all && cat === "Todos" && list.length > LIMIT;
     if (moreBtn) {
       moreBtn.hidden = !cut;
       moreBtn.textContent = "Ver todo el catálogo (" + list.length + " productos)";
     }
-    (cut ? list.slice(0, LIMIT) : list)
-      .forEach(function (p) {
-        var card = el("article", "product");
-        card.appendChild(el("p", "p-cat", p.categoria));
-        card.appendChild(el("h3", "p-name", p.nombre));
-        card.appendChild(el("p", "p-desc", p.descripcion));
-
-        if (p.talles) {
-          var sizes = el("ul", "p-sizes");
-          sizes.setAttribute("aria-label", "Talles");
-          p.talles.split(",").forEach(function (t) {
-            t = t.trim();
-            if (t) sizes.appendChild(el("li", null, t));
-          });
-          card.appendChild(sizes);
-        }
-
-        var actions = el("div", "p-actions");
-        var a = el("a", "btn btn-wa btn-sm", "Consultar precio");
-        a.href = waLink("¡Hola Factoría! Quiero consultar precio por cantidad de: " + p.nombre);
-        a.target = "_blank";
-        a.rel = "noopener";
-        actions.appendChild(a);
-
-        if (p.guiaTalles) {
-          var g = el("button", "link-arrow", "Guía de talles");
-          g.type = "button";
-          g.setAttribute("data-lightbox", "/assets/img/lineas/guia-talles-musculosa.webp");
-          g.setAttribute("data-caption", "Guía de talles · Musculosa hombre");
-          actions.appendChild(g);
-        }
-        card.appendChild(actions);
-        productsEl.appendChild(card);
-      });
+    cards.forEach(function (c) { c.hidden = true; });
+    (cut ? list.slice(0, LIMIT) : list).forEach(function (c) { c.hidden = false; });
   }
 
   if (filtersEl && productsEl) {
+    var cards = Array.prototype.slice.call(productsEl.querySelectorAll(".product[data-cat]"));
     var cats = ["Todos"];
-    data.forEach(function (p) { if (cats.indexOf(p.categoria) === -1) cats.push(p.categoria); });
+    cards.forEach(function (c) {
+      var cat = c.getAttribute("data-cat");
+      if (cats.indexOf(cat) === -1) cats.push(cat);
+    });
 
     cats.forEach(function (c, i) {
-      var b = el("button", "chip", c);
+      var b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = c;
       b.type = "button";
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", i === 0 ? "true" : "false");
       b.addEventListener("click", function () {
         filtersEl.querySelectorAll(".chip").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
         b.setAttribute("aria-selected", "true");
-        renderProducts(c);
+        renderProducts(cards, c);
       });
       filtersEl.appendChild(b);
     });
-    renderProducts("Todos");
-    if (moreBtn) moreBtn.addEventListener("click", function () { renderProducts("Todos", true); });
+    renderProducts(cards, "Todos");
+    if (moreBtn) moreBtn.addEventListener("click", function () { renderProducts(cards, "Todos", true); });
   }
 
   // ── Lightbox (galería, líneas y guías)
