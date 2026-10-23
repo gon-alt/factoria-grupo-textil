@@ -25,11 +25,13 @@
       : (a.closest("section[id]") || {}).id || "otro";
     var line = a.closest(".line");
     var product = a.closest(".product");
-    var linea = line && line.querySelector("h3") ? line.querySelector("h3").textContent.trim()
+    // En las páginas de línea, <body data-linea> define la línea de todos los botones
+    var linea = document.body.getAttribute("data-linea")
+      || (line && line.querySelector("h3") ? line.querySelector("h3").textContent.trim()
       : product && product.querySelector(".p-cat") ? product.querySelector(".p-cat").textContent.trim()
-      : "general";
+      : "general");
     var producto = product && product.querySelector(".p-name") ? product.querySelector(".p-name").textContent.trim() : "";
-    window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, producto: producto });
+    window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, producto: producto, pagina: location.pathname });
   });
  
   // ── Año en el footer
