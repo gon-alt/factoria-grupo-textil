@@ -5,10 +5,12 @@ Sitio estático (HTML, CSS y JS, sin build) listo para GitHub y Vercel.
 ## Estructura
 
 ```
-index.html            Página principal
+index.html            Página principal (incluye el catálogo mayorista completo)
+*.html                Una página por línea: remeras-lisas-por-mayor, impresion-dtf,
+                      camisetas-de-futbol-personalizadas, merchandising-para-empresas,
+                      uniformes-de-trabajo
 css/styles.css        Estilos
 js/main.js            WhatsApp, menú mobile, catálogo, galería
-data/catalogo.js      Lista de productos (sin precios)
 assets/brand/         Logos, favicon, imagen para compartir (og-image)
 assets/img/           Imágenes optimizadas (WebP) de líneas y trabajos
 vercel.json           Cache y headers de seguridad
@@ -20,7 +22,9 @@ img/                  Originales y lista de precios: están en .gitignore y NO s
 | Qué | Dónde |
 |---|---|
 | Número de WhatsApp | `js/main.js` → `WA_NUMBER`. También está en los `href` de `index.html` como respaldo y en el JSON-LD |
-| Productos del catálogo | `data/catalogo.js` (las categorías y filtros se arman solas) |
+| Productos del catálogo | Escritos en el HTML: `index.html` → `#products` (catálogo completo) y la página de la línea que corresponda. Cada tarjeta lleva `data-cat` con su categoría; los filtros se arman solos |
+| Páginas de línea | Un `.html` por línea en la raíz. Si cambiás el header o el footer, repetilo en todas las páginas |
+| Nueva página | Sumala también a `sitemap.xml` |
 | Redes | `index.html`: buscá `instagram.com` y `facebook.com` |
 | Mensaje precargado de un botón | Atributo `data-wa="..."` del botón |
 | Trabajos de la galería | Sección `#trabajos` de `index.html` |
