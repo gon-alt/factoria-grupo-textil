@@ -33,6 +33,14 @@
     var producto = product && product.querySelector(".p-name") ? product.querySelector(".p-name").textContent.trim() : "";
     window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, producto: producto, pagina: location.pathname });
   });
+
+  // ── Medición: cada clic al mail se envía a GA4 como "email_click"
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a[href^="mailto:"]');
+    if (!a || typeof window.gtag !== "function") return;
+    var ubicacion = a.closest("footer") ? "footer" : (a.closest("section[id]") || {}).id || "otro";
+    window.gtag("event", "email_click", { ubicacion: ubicacion, pagina: location.pathname });
+  });
  
   // ── Año en el footer
   var y = document.getElementById("year");
