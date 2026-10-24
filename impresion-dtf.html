@@ -34,7 +34,14 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-RGEYKYGEFB');
+    // Tráfico interno: entrar una vez con ?interno=1 marca este navegador (?interno=0 lo desmarca)
+    var gaParams = {};
+    try {
+      if (/[?&]interno=1/.test(location.search)) localStorage.setItem('fgt_interno', '1');
+      if (/[?&]interno=0/.test(location.search)) localStorage.removeItem('fgt_interno');
+      if (localStorage.getItem('fgt_interno') === '1') gaParams.traffic_type = 'internal';
+    } catch (e) {}
+    gtag('config', 'G-RGEYKYGEFB', gaParams);
   </script>
 
   <script type="application/ld+json">
