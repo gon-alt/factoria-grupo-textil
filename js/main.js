@@ -28,10 +28,12 @@
     // En las páginas de línea, <body data-linea> define la línea de todos los botones
     var linea = document.body.getAttribute("data-linea")
       || (line && line.querySelector("h3") ? line.querySelector("h3").textContent.trim()
-      : product && product.querySelector(".p-cat") ? product.querySelector(".p-cat").textContent.trim()
+      : product ? "Catálogo"
       : "general");
+    // Categoría del producto (Remeras, Buzos, Gorras…) en un dato aparte
+    var categoria = product ? (product.getAttribute("data-cat") || "") : "";
     var producto = product && product.querySelector(".p-name") ? product.querySelector(".p-name").textContent.trim() : "";
-    window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, producto: producto, pagina: location.pathname });
+    window.gtag("event", "whatsapp_click", { ubicacion: ubicacion, linea: linea, categoria: categoria, producto: producto, pagina: location.pathname });
   });
 
   // ── Medición: cada clic al mail se envía a GA4 como "email_click"
